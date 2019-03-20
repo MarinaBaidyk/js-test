@@ -32,7 +32,6 @@ function myScroll() {
 
 function resize() {
  if (window.matchMedia('(min-width: 1200px)').matches) {
-        window.onscroll = myScroll;
         setWidth();
     } else {
         elem.style.width = 'auto';
