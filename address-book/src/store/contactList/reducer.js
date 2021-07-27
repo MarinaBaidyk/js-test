@@ -29,9 +29,10 @@ export default function contactListReducer(state = initialState, action) {
       return state;
 
     case 'CONTACT_DELETE':
-      // return state
-      //   .filter(title => title !== action.payload),
-      return [...state, action.payload];
+      return [
+        ...state.filter(item => item !== action.payload)
+      ];
+     //return [...state, action.payload];
 
     default:
       return state;

@@ -41,9 +41,6 @@ function ContactList({ list, fields, removeContact }) {
   const titles = list
     .map(contact => keys.map(key => contact[key]).join(' '));
 
-    console.log(titles);
-    console.log(keys);
-
   return (
     <>
       <Link to="/contacts/add" className="link-add">
@@ -114,6 +111,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => ({
   // onCreate: (title) => dispatch(contactActions.contactCreate(title)),
   // onDelete: (index) => dispatch(contactActions.contactDelete(index))
+  removeContact: value => dispatch({
+    type: 'CONTACT_DELETE',
+    payload: value,
+ }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
