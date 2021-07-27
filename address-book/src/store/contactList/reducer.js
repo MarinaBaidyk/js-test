@@ -23,13 +23,15 @@ const initialState = [
 export default function contactListReducer(state = initialState, action) {
   switch (action.type) {
     case 'CONTACT_CREATE':
-      return state;
+      return [...state, action.payload];
 
     case 'CONTACT_UPDATE':
       return state;
 
     case 'CONTACT_DELETE':
-      return state;
+      // return state
+      //   .filter(title => title !== action.payload),
+      return [...state, action.payload];
 
     default:
       return state;

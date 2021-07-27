@@ -1,3 +1,2 @@
-// export const TODO_TOGGLE_ITEM = "TODO_TOGGLE_ITEM";
 export const CONTACT_CREATE = "CONTACT_CREATE";
 export const CONTACT_DELETE = "CONTACT_DELETE";

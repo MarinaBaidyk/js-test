@@ -10,6 +10,9 @@ import './index.css';
 
 
 function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddContact }) {
+  const history = useHistory();
+
+  const handleClick = () => {history.push("/contacts");}
 
   const saveHandler = () => {
     const contactData = fields.reduce((acc, field) => {
@@ -19,12 +22,6 @@ function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddCo
 
     onAddContact(contactData);
     formDataClear();
-  };
-
-  let history = useHistory();
-
-  const onSaveHandler = () => {
-    history.push("/contacts");
   };
 
   return (
@@ -48,7 +45,15 @@ function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddCo
             />
           </div>
         ))}
-        <Button variant="contained" color="primary" className="btn btn-primary" onClick={saveHandler}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          className="btn btn-primary" 
+          onClick={() => {
+            saveHandler();
+            handleClick();
+          }} 
+          >
           Add
         </Button> 
       </div>

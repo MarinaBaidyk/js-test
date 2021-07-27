@@ -1,6 +1,6 @@
 const initialState = {};
 
-export default function dormDataReducer(state = initialState, action) {
+export default function formDataReducer(state = initialState, action) {
   switch (action.type) {
     case 'FIELD_CHANGE':
       return {

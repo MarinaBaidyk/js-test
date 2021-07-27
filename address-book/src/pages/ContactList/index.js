@@ -1,22 +1,38 @@
 import React from 'react';
+import { useState } from "react";
 import { connect } from 'react-redux';
-import { Button, Dialog, DialogActions, DialogTitle, List, ListItem, ListItemText } from '@material-ui/core';
-import ContactItem from '../../components/ContactItem';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, DialogContent } from '@material-ui/core';
+//import ContactItem from '../../components/ContactItem';
+//import { IconButton } from '@material-ui/core';
+import CreateIcon from '@material-ui/icons/Create';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {Link} from 'react-router-dom';
-import * as contactActions from "../../store/contactList/actions";
+import { useHistory } from "react-router-dom";
+//import * as contactActions from "../../store/contactList/actions";
 import './index.css';
+//import { ControlPointDuplicateOutlined } from '@material-ui/icons';
 
-function ContactList({ list, fields, onDelete, onCreate, showContactData }) {
-  const [open, setOpen] = React.useState(false);
+function ContactList({ list, fields, removeContact }) {
+  const history = useHistory();
+  const [forRemoving, setForRemoving] = useState(null);
+  const [showContact, setShowContact] = useState(null);
+
+  const closeDialog = () => setForRemoving(null);
+  const removeHandler = () => {
+    removeContact(forRemoving);
+    closeDialog();
+  };
+
+  const closeShowDialog = () => {setShowContact(null)}
   
   //const [deleteItem, setDeleteItem] = React.useState(null);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
   const keys = fields
     .filter(field => field.display)
@@ -24,6 +40,9 @@ function ContactList({ list, fields, onDelete, onCreate, showContactData }) {
 
   const titles = list
     .map(contact => keys.map(key => contact[key]).join(' '));
+
+    console.log(titles);
+    console.log(keys);
 
   return (
     <>
@@ -34,34 +53,54 @@ function ContactList({ list, fields, onDelete, onCreate, showContactData }) {
       </Link>
 
       <div className="contact-list-container">
-        {titles.map((title) => (
-          <ContactItem key={title} title={title} onSave={(title) => onCreate(title)} onDelete={handleOpen} onShow={handleOpen} />
+        {titles.map((title, index, field) => (
+          //<ContactItem key={title} title={title} onSave={(title) => onCreate(title)} onDelete={handleOpen} onShow={handleOpen} />
+          <div className="contact-item"  key={index}>
+            <span className="contact-display-info" onClick={() => setShowContact(title)}>
+              {title}
+            </span>
+      
+            <div className="contact-controls">
+              <IconButton color="primary" component="span" onClick={() => history.push('/contacts/add')}>
+                <CreateIcon />
+              </IconButton>
+      
+              <IconButton color="secondary" component="span" onClick={() => setForRemoving(title)}>
+                <DeleteIcon /> 
+              </IconButton>
+            </div>
+          </div>
         ))}
       </div>
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={!!forRemoving} onClose={closeDialog}>
         <DialogTitle>Вы уверены что хотите удалить контакт?</DialogTitle>
 
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={closeDialog} color="primary">
             Нет
           </Button>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={removeHandler} color="secondary">
             Да
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
-        <List>
-          {titles.map((title) => (
-            <ListItem key={title}>
-              <ListItemText primary={title} />
-            </ListItem>
+      <Dialog open={!!showContact} onClose={closeShowDialog}>
+        <DialogTitle>Данные контакта:</DialogTitle>
+        <DialogContent>
+          {fields.map(field => (
+            <div>
+              {field.displayName}: {showContact && showContact[field.name]}
+            </div>
           ))}
-      </List>
-    </Dialog>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeShowDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
@@ -71,9 +110,10 @@ const mapStateToProps = state => ({
   fields: state.fieldList,
 });
 
+
 const mapDispatchToProps = (dispatch) => ({
-  onCreate: (title) => dispatch(contactActions.contactCreate(title)),
-  onDelete: (index) => dispatch(contactActions.contactDelete(index))
+  // onCreate: (title) => dispatch(contactActions.contactCreate(title)),
+  // onDelete: (index) => dispatch(contactActions.contactDelete(index))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
