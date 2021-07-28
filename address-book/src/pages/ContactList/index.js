@@ -2,8 +2,6 @@ import React from 'react';
 import { useState } from "react";
 import { connect } from 'react-redux';
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, DialogContent } from '@material-ui/core';
-//import ContactItem from '../../components/ContactItem';
-//import { IconButton } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {Link} from 'react-router-dom';
@@ -12,34 +10,35 @@ import { useHistory } from "react-router-dom";
 import './index.css';
 //import { ControlPointDuplicateOutlined } from '@material-ui/icons';
 
+// function getContactTitle(contact, fields) {
+//   return fields
+//     .filter(field => field.display)
+//      .map (fields => contact[field.name])
+//     .join('');
+//  }
+
+
 function ContactList({ list, fields, removeContact }) {
   const history = useHistory();
-  const [forRemoving, setForRemoving] = useState(null);
-  const [showContact, setShowContact] = useState(null);
+  const [forRemoving, setForRemoving] = useState('');
+  const [showContact, setShowContact] = useState('');
 
-  const closeDialog = () => setForRemoving(null);
+  const closeDialog = () => setForRemoving('');
   const removeHandler = () => {
     removeContact(forRemoving);
     closeDialog();
   };
 
-  const closeShowDialog = () => {setShowContact(null)}
+  const closeShowDialog = () => {setShowContact('')}
   
-  //const [deleteItem, setDeleteItem] = React.useState(null);
-
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
-
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-
   const keys = fields
     .filter(field => field.display)
     .map(field => field.name);
 
   const titles = list
     .map(contact => keys.map(key => contact[key]).join(' '));
+
+  const handleClick = index => {history.push(`/contacts/edit/${index}`)};
 
   return (
     <>
@@ -50,19 +49,18 @@ function ContactList({ list, fields, removeContact }) {
       </Link>
 
       <div className="contact-list-container">
-        {titles.map((title, index, field) => (
-          //<ContactItem key={title} title={title} onSave={(title) => onCreate(title)} onDelete={handleOpen} onShow={handleOpen} />
+        {titles.map((title, index) => (
           <div className="contact-item"  key={index}>
-            <span className="contact-display-info" onClick={() => setShowContact(title)}>
+            <span className="contact-display-info" onClick={() => setShowContact(list[index])}>
               {title}
             </span>
       
             <div className="contact-controls">
-              <IconButton color="primary" component="span" onClick={() => history.push('/contacts/add')}>
-                <CreateIcon />
+              <IconButton color="primary" component="span" onClick={() => handleClick(index)}>
+                <CreateIcon /> 
               </IconButton>
       
-              <IconButton color="secondary" component="span" onClick={() => setForRemoving(title)}>
+              <IconButton color="secondary" component="span" onClick={() => setForRemoving(list[index])}>
                 <DeleteIcon /> 
               </IconButton>
             </div>
@@ -73,12 +71,12 @@ function ContactList({ list, fields, removeContact }) {
       <Dialog open={!!forRemoving} onClose={closeDialog}>
         <DialogTitle>Вы уверены что хотите удалить контакт?</DialogTitle>
 
-        <DialogActions>
+        <DialogActions className="btn-group">
           <Button onClick={closeDialog} color="primary">
-            Нет
+            No
           </Button>
           <Button onClick={removeHandler} color="secondary">
-            Да
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
@@ -86,14 +84,14 @@ function ContactList({ list, fields, removeContact }) {
       <Dialog open={!!showContact} onClose={closeShowDialog}>
         <DialogTitle>Данные контакта:</DialogTitle>
         <DialogContent>
-          {fields.map(field => (
+          {fields.filter(field => showContact[field.name]).map(field => (
             <div>
               {field.displayName}: {showContact && showContact[field.name]}
             </div>
-          ))}
+          ))} 
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeShowDialog} color="primary">
+          <Button onClick={closeShowDialog} color="primary" variant="contained">
             Close
           </Button>
         </DialogActions>
@@ -109,11 +107,9 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = (dispatch) => ({
-  // onCreate: (title) => dispatch(contactActions.contactCreate(title)),
-  // onDelete: (index) => dispatch(contactActions.contactDelete(index))
-  removeContact: value => dispatch({
+  removeContact: name => dispatch({
     type: 'CONTACT_DELETE',
-    payload: value,
+    payload: name,
  }),
 });
 

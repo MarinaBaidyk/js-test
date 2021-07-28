@@ -2,45 +2,48 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {TextField, Button, InputAdornment } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useHistory, useParams } from "react-router-dom";
 //import { useState } from "react";
-import { useHistory } from "react-router-dom";
-//import * as fieldActions from "../../store/fieldList/actions";
 import './index.css';
 
-
-function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddContact }) {
+function ContactEdit ({fields, formData, onChangeField, list}) {
   const history = useHistory();
-
+  const params = useParams();
+  //const[value, setValue] = useState(list[params.id]);
   const handleClick = () => {history.push("/contacts");}
 
-  const saveHandler = () => {
-    const contactData = fields.reduce((acc, field) => {
-      acc[field.name] = formData[field.name];
-      return acc;
-    }, {});
 
-    onAddContact(contactData);
-    formDataClear();
-  };
+  console.log(params.contactIndex);
+  console.log(list[params.id]);
 
-  const checkInputValue = () => {
-    for (let key in formData) {
-      if (!formData[key]) {
-        return false;
-      }
-      return true;
-    }
-  }
+  // const saveHandler = () => {
+  //   const contactData = fields.reduce((acc, field) => {
+  //     acc[field.name] = formData[field.name];
+  //     return acc;
+  //   }, {});
+
+  //   onAddContact(contactData);
+  // };
+
+  // const keys = fields
+  //   .filter(field => field.display)
+  //   .map(field => field.name);
+
+  // const titles = list
+  //   .map(contact => keys.map(key => contact[key]).join(' '));
+
+  // console.log(list);
 
   return (
     <>
       <div className="add-contact-item">
-        <h2>Contact creating:</h2>
-        {fields.map(field => (
+        <h2>Edit contact:</h2>
+        {fields.map((field, index) => (
           <div className="form-group">
             <span>{field.displayName}:</span>
             <TextField
-              value={formData[field.name] || ''}
+              key={index}
+              value={list[params.contactIndex][field.name]}
               onChange={e => onChangeField(field.name, e.target.value)}
               id="input-with-icon-textfield"
               InputProps={{
@@ -58,10 +61,9 @@ function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddCo
           color="primary" 
           className="btn btn-primary" 
           onClick={() => {
-            saveHandler();
+            //saveHandler();
             handleClick();
           }}
-          disabled={!checkInputValue()}
           >
           Add
         </Button> 
@@ -71,8 +73,8 @@ function ContactCreate({ fields, formData, onChangeField, formDataClear, onAddCo
 }
 
 const mapStateToProps = state => ({
+  list: state.contactList,
   fields: state.fieldList,
-  formData: state.formData || {},
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -80,12 +82,7 @@ const mapDispatchToProps = dispatch => ({
      type: 'FIELD_CHANGE',
      payload: {name, value}
    }),
-   onAddContact: contactData => dispatch({
-      type: 'CONTACT_CREATE',
-      payload: contactData,
-   }),
-   formDataClear: () => dispatch({type: 'FIELD_CLEAR'}),
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactEdit);

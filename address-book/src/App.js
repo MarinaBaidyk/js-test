@@ -3,6 +3,7 @@ import './App.css';
 import ContactList from './pages/ContactList';
 import FieldList from './pages/FieldList';
 import ContactCreate from './pages/ContactCreate';
+import ContactEdit from './pages/ContactEdit';
 
 function App() {
   return (
@@ -22,10 +23,7 @@ function App() {
       <Switch>
         <Route path="/contacts" exact component={ContactList} />
         <Route path="/contacts/add" exact component={ContactCreate} />
-        <Route path="/contacts/edit/:contactId">
-          Форма редактирования контакта
-        </Route>
-
+        <Route path="/contacts/edit/:contactIndex" exact component={ContactEdit} />
     
         <Route path="/fields" exact component={FieldList} />
         <Route path="/fields/add">

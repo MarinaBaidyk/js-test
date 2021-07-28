@@ -12,12 +12,12 @@ const initialState = [
   {
     name: 'phone',
     displayName: 'Телефон',
-    display: true,
+    display: false,
   },
   {
     name: 'email',
     displayName: 'Электронная почта',
-    display: true,
+    display: false,
   },
   {
     name: 'birthday',

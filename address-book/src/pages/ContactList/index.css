@@ -26,3 +26,7 @@
     margin-bottom: 20px;
     text-decoration: none;
 }
+
+.btn-group button {
+    font-weight: bold;
+}
